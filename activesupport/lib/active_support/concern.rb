@@ -127,16 +127,11 @@ module ActiveSupport
     # so that you can write class macros here.
     # When you define more than one +included+ block, it raises an exception.
     def included(base = nil, &block)
-      if base.nil?
-        if instance_variable_defined?(:@_included_block)
-          if @_included_block.source_location != block.source_location
-            raise MultipleIncludedBlocks
-          end
-        else
-          @_included_block = block
-        end
-      else
-        super
+      return super unless base.nil?
+      return @_included_block = block unless instance_variable_defined?(:@_included_block)
+
+      if @_included_block.source_location != block.source_location
+        raise MultipleIncludedBlocks
       end
     end
 
